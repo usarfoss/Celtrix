@@ -62,4 +62,6 @@ export function copyTemplates(projectPath, config) {
     logger.info("📂 Copying template files...");
     fs.copySync(frontendTemplate, clientPath);
   }
+
+  // PERN falls through to default copy (client + server by language), so no special branch needed
 }
