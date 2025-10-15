@@ -1,8 +1,9 @@
 {
-  "name": "server",
+  "name": "mern-auth-server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "MERN stack server with authentication",
+  "main": "server.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
@@ -24,10 +25,9 @@
     "precommit": "npm run validate",
     "prepare": "husky install"
   },
-  "keywords": [],
+  "keywords": ["mern", "express", "mongodb", "authentication"],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",

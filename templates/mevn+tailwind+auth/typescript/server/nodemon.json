@@ -1,0 +1,35 @@
+{
+  "watch": [
+    "*.js",
+    "*.ts",
+    "controllers/",
+    "models/",
+    "routes/",
+    "middleware/",
+    "utils/",
+    "config/"
+  ],
+  "ext": "js,ts,json",
+  "ignore": [
+    "node_modules/",
+    "tests/",
+    "*.test.js",
+    "*.test.ts",
+    "coverage/",
+    "dist/",
+    "build/"
+  ],
+  "delay": "1000",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "exec": "ts-node server.js",
+  "restartable": "rs",
+  "colours": true,
+  "verbose": false,
+  "signal": "SIGTERM",
+  "events": {
+    "restart": "echo '🔄 TypeScript Server restarted due to file changes'",
+    "crash": "echo '💥 TypeScript Server crashed, restarting...'"
+  }
+}

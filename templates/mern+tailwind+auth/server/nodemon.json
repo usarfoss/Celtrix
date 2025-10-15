@@ -1,0 +1,33 @@
+{
+  "watch": [
+    "*.js",
+    "controllers/",
+    "models/",
+    "routes/",
+    "middleware/",
+    "utils/",
+    "config/"
+  ],
+  "ext": "js,json",
+  "ignore": [
+    "node_modules/",
+    "tests/",
+    "*.test.js",
+    "coverage/",
+    "dist/",
+    "build/"
+  ],
+  "delay": "1000",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "exec": "node server.js",
+  "restartable": "rs",
+  "colours": true,
+  "verbose": false,
+  "signal": "SIGTERM",
+  "events": {
+    "restart": "echo '🔄 Server restarted due to file changes'",
+    "crash": "echo '💥 Server crashed, restarting...'"
+  }
+}
