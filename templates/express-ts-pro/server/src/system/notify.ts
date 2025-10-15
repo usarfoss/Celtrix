@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import nodemailer from 'nodemailer';
+// Stubs for future channels (Twilio, Telegram, Slack, Discord, Meta)
+// Implement actual clients and secrets via env vars when available.
 
 export const router = Router();
 
@@ -24,6 +26,31 @@ router.post('/email', async (req, res, next) => {
   } catch (e) {
     next(e);
   }
+});
+
+router.post('/sms', async (_req, res) => {
+  // TODO: Integrate Twilio
+  res.json({ status: 'queued', channel: 'sms' });
+});
+
+router.post('/whatsapp', async (_req, res) => {
+  // TODO: Integrate Twilio WhatsApp
+  res.json({ status: 'queued', channel: 'whatsapp' });
+});
+
+router.post('/telegram', async (_req, res) => {
+  // TODO: Integrate Telegram bot
+  res.json({ status: 'queued', channel: 'telegram' });
+});
+
+router.post('/slack', async (_req, res) => {
+  // TODO: Integrate Slack webhook
+  res.json({ status: 'queued', channel: 'slack' });
+});
+
+router.post('/discord', async (_req, res) => {
+  // TODO: Integrate Discord webhook
+  res.json({ status: 'queued', channel: 'discord' });
 });
 
 

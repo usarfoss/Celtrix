@@ -1,33 +1,21 @@
 import 'dotenv/config';
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import { rateLimiter } from './setup/rateLimiter';
-import { requestLogger } from './setup/requestLogger';
-import { errorHandler, notFoundHandler } from './setup/errorHandlers';
-import { router as apiRouter } from './setup/routes';
+import { createApp } from './app';
+import { logger } from './setup/logger';
 
-const app = express();
-
-app.use(helmet());
-app.use(cors());
-app.use(express.json({ limit: '1mb' }));
-app.use(requestLogger);
-app.use(rateLimiter);
-
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok' });
-});
-
-app.use('/api', apiRouter);
-
-app.use(notFoundHandler);
-app.use(errorHandler);
+const app = createApp();
 
 const port = Number(process.env.PORT) || 4000;
-app.listen(port, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Server listening on http://localhost:${port}`);
+const server = app.listen(port, () => {
+  logger.info('server_started', { port, env: process.env.NODE_ENV || 'development' });
+});
+
+process.on('unhandledRejection', (reason: any) => {
+  logger.error('unhandled_rejection', { reason: reason?.message || String(reason) });
+});
+
+process.on('uncaughtException', (err) => {
+  logger.error('uncaught_exception', { message: err.message, stack: err.stack });
+  server.close(() => process.exit(1));
 });
 
 
