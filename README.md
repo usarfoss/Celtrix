@@ -50,9 +50,15 @@ That's it! Follow the interactive prompts to customize your project.
 
 ---
 
-## FAQ
+## ❓ FAQ
 
-You can now find the full list of FAQs here: [FAQ.md](./FAQ.md)
+Quick answers to common questions:
+
+- **What makes Celtrix different from other tools?**: Celtrix focuses on multi-stack scaffolding with opinionated, ready-to-use templates (frontend and backend), modern tooling pre-configured, and interactive setup to minimize manual boilerplate.
+- **How can I contribute a new stack?**: Add your template under `templates/` following existing conventions, test with the CLI, then open a PR. See `CONTRIBUTING.md` for details.
+- **Are the generated projects production-ready?**: They are production-leaning starters with sensible defaults. You should still review security, environment variables, CI/CD, and scaling settings for your specific use case.
+
+For more, see the full FAQ: [FAQ.md](./FAQ.md)
 
 ---
 
