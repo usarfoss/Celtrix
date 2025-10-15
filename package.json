@@ -1,62 +1,25 @@
-{
-  "name": "celtrix",
-  "version": "2.0.4",
-  "description": "CLI to create MERN apps quickly",
-  "type": "module",
-  "main": "./bin/celtrix.js",
+
+    {
+  "name": "celtrix-cli",
+  "version": "1.0.0",
+  "description": "A CLI tool to scaffold new projects.",
+  "main": "index.js",
   "bin": {
-    "celtrix": "./bin/celtrix.js"
-  },
-  "files": [
-    "bin/",
-    "index.js",
-    "commands/",
-    "utils/",
-    "templates/"
-  ],
-  "keywords": [
-    "mern",
-    "cli",
-    "react",
-    "express",
-    "mongodb",
-    "fullstack"
-  ],
-  "author": "Joe Celaster",
-  "license": "ISC",
-  "dependencies": {
-    "@octokit/rest": "^22.0.0",
-    "@pinecone-database/pinecone": "^6.1.2",
-    "boxen": "^8.0.1",
-    "chalk": "^5.6.0",
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "figlet": "^1.8.2",
-    "fs-extra": "^11.3.1",
-    "gradient-string": "^3.0.0",
-    "inquirer": "^12.9.4",
-    "log-symbols": "^7.0.1",
-    "node-fetch": "^3.3.2",
-    "ora": "^8.2.0"
+    "celtrix": "bin/index.js"
   },
   "scripts": {
-    "release:patch": "npm version patch && npm publish --access public",
-    "release:minor": "npm version minor && npm publish --access public",
-    "release:major": "npm version major && npm publish --access public",
-    "validate": "node scripts/validate-apis.js",
-    "validate:pinecone": "node scripts/validate-apis.js pinecone",
-    "validate:github": "node scripts/validate-apis.js github",
-    "validate:gemini": "node scripts/validate-apis.js gemini",
-    "populate-issues": "node scripts/populate-existing-issues.js",
-    "cleanup-issue": "node scripts/cleanup-closed-issue.js",
-    "cleanup-specific": "node scripts/cleanup-specific-issue.js",
-    "cleanup-duplicates": "node scripts/cleanup-duplicates.js --force",
-    "debug-db": "node scripts/debug-pinecone.js",
-    "clear-all": "echo '⚠️  Use: npm run clear-all:force' && exit 1",
-    "clear-all:force": "node scripts/clear-all-vectors.js --force",
-    "check-duplicates": "node scripts/check-duplicates.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "devDependencies": {
-    "typescript": "^5.9.3"
+  "keywords": [
+    "cli",
+    "scaffolding"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^12.1.0",
+    "fs-extra": "^11.2.0",
+    "inquirer": "^8.2.4"
   }
 }
