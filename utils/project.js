@@ -91,20 +91,45 @@ export async function setupProject(projectName, config) {
   console.log(`${chalk.greenBright(`✅ Project ${chalk.bold.yellow(`${projectName}`)} created successfully! 🎉`)}`);
   console.log(chalk.gray("-------------------------------------------"))
   console.log(chalk.cyan("👉 Next Steps:\n"));
-  
+
+  let nextStepsLines = [];
   if(config.stack === "mean" || config.stack === "mean+tailwind+auth") {
-    console.log(`   ${chalk.yellow("cd")} ${projectName}/client && ${chalk.green("npm start")}`);
-    console.log(`   ${chalk.yellow("cd")} ${projectName}/server && ${chalk.green("npm start")}`);
+    nextStepsLines.push(`${chalk.yellow("cd")} ${chalk.bold(`${projectName}/client`)} && ${chalk.green("npm start")}`);
+    nextStepsLines.push(`${chalk.yellow("cd")} ${chalk.bold(`${projectName}/server`)} && ${chalk.green("npm start")}`);
   } else if(config.stack === "t3-stack") {
-    console.log(`   ${chalk.yellow("cd")} ${projectName}/t3-app && ${chalk.green("npm run dev")}`);
-  }else if(config.stack==="hono"){
-    console.log(`   ${chalk.yellow("cd")} ${projectName}/client && ${chalk.green("npm run dev")}`);
-    console.log(`   ${chalk.yellow("cd")} ${projectName}/server && ${chalk.green("npm run dev")}`);
+    nextStepsLines.push(`${chalk.yellow("cd")} ${chalk.bold(`${projectName}/t3-app`)} && ${chalk.green("npm run dev")}`);
+  } else if(config.stack === "hono"){
+    nextStepsLines.push(`${chalk.yellow("cd")} ${chalk.bold(`${projectName}/client`)} && ${chalk.green("npm run dev")}`);
+    nextStepsLines.push(`${chalk.yellow("cd")} ${chalk.bold(`${projectName}/server`)} && ${chalk.green("npm run dev")}`);
+  } else if(config.stack === "next-express"){
+    nextStepsLines.push(`${chalk.yellow("cd")} ${chalk.bold(`${projectName}/client`)} && ${chalk.green("npm run dev")}`);
+    nextStepsLines.push(`${chalk.yellow("cd")} ${chalk.bold(`${projectName}/server`)} && ${chalk.green("npm run dev")}`);
+  } else if(config.stack === "mern-turbo"){
+    nextStepsLines.push(`${chalk.yellow("cd")} ${chalk.bold(projectName)}`);
+    nextStepsLines.push(`${chalk.green("npm install")}`);
+    nextStepsLines.push(`${chalk.green("npm run dev")} ${chalk.gray("# runs all apps via Turbo")}`);
+  } else if(config.stack === "pern"){
+    nextStepsLines.push(`${chalk.yellow("cd")} ${chalk.bold(`${projectName}/client`)} && ${chalk.green("npm run dev")}`);
+    nextStepsLines.push(`${chalk.yellow("cd")} ${chalk.bold(`${projectName}/server`)} && ${chalk.green("npm run dev")}`);
   } else {
-    console.log(`   ${chalk.yellow("cd")} ${projectName}/client && ${chalk.green("npm run dev")}`);
-    console.log(`   ${chalk.yellow("cd")} ${projectName}/server && ${chalk.green("npm start")}`);
+    nextStepsLines.push(`${chalk.yellow("cd")} ${chalk.bold(`${projectName}/client`)} && ${chalk.green("npm run dev")}`);
+    nextStepsLines.push(`${chalk.yellow("cd")} ${chalk.bold(`${projectName}/server`)} && ${chalk.green("npm start")}`);
   }
-  
+
+  for(const line of nextStepsLines){
+    console.log(`   ${line}`);
+  }
+
+  const boxText = [
+    `${chalk.green.bold("Next Steps")}`,
+    '',
+    ...nextStepsLines.map(s => `• ${s}`),
+    '',
+    `${chalk.cyan("Tip:")} Use ${chalk.bold("docker-compose up")} to run containers if Docker files are present.`
+  ].join("\n");
+
+  console.log('\n' + boxen(boxText, { padding: 1, margin: 1, borderColor: "green", borderStyle: "round" }));
+
   console.log(chalk.gray("-------------------------------------------"))
   console.log(chalk.gray("\n✨ Made with ❤️  by Celtrix ✨\n"));
 }
