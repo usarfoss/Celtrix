@@ -152,6 +152,34 @@ export function turboMernSetup(projectPath, config, projectName){
   }
 }
 
+export function pernSetup(projectPath, config, projectName){
+  try{
+    logger.info("⚡ Setting up PERN...");
+    // client
+    if(config.language==='typescript'){
+      execSync(`npm create vite@latest client -- --t react-ts --no-rolldown --no-interactive`, { cwd: projectPath, stdio: 'inherit', shell: true });
+    }else{
+      execSync(`npm create vite@latest client -- --t react --no-rolldown --no-interactive`, { cwd: projectPath, stdio: 'inherit', shell: true });
+    }
+
+    // server from express-ts-pro template then add pg deps
+    const serverDir = path.join(projectPath,'server');
+    fs.mkdirSync(serverDir, { recursive: true });
+    const fromServer = path.join(process.cwd(), 'templates','express-ts-pro','server');
+    fs.cpSync(fromServer, serverDir, { recursive: true });
+
+    // inject PostgreSQL utilities
+    const dbUtilPath = path.join(serverDir,'src','system','db.ts');
+    const dbUtil = `import { Pool } from 'pg';\n\nconst pool = new Pool({\n  connectionString: process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/postgres'\n});\n\nexport async function query<T=any>(text: string, params?: any[]): Promise<{ rows: T[] }>{\n  return pool.query(text, params);\n}\n\nexport async function migrate(){\n  await pool.query('CREATE TABLE IF NOT EXISTS healthchecks(id serial primary key, created_at timestamptz default now())');\n}\n`;
+    fs.writeFileSync(dbUtilPath, dbUtil);
+
+    logger.info("✅ PERN scaffolded (client + server with PostgreSQL)");
+  }catch(error){
+    logger.error("❌ Failed to set up PERN");
+    throw error;
+  }
+}
+
 export function angularSetup(projectPath, config, projectName) {
   logger.info("⚡ Setting up Angular...");
 

@@ -4,7 +4,7 @@ import chalk from "chalk";
 import boxen from "boxen";
 import { logger } from "./logger.js";
 import { copyTemplates } from "./templateManager.js";
-import { HonoReactSetup,mernTailwindSetup, installDependencies, mernSetup, serverAuthSetup, serverSetup, mevnSetup, nextExpressSetup, writeDockerArtifacts, turboMernSetup } from "./installer.js";
+import { HonoReactSetup,mernTailwindSetup, installDependencies, mernSetup, serverAuthSetup, serverSetup, mevnSetup, nextExpressSetup, writeDockerArtifacts, turboMernSetup, pernSetup } from "./installer.js";
 import { angularSetup, angularTailwindSetup } from "./installer.js";
 
 export async function setupProject(projectName, config) {
@@ -36,7 +36,7 @@ export async function setupProject(projectName, config) {
   );
 
   // --- Copy & Install ---
-  if(config.stack !== "mean" && config.stack !== "mean+tailwind+auth" && config.stack!=="hono" && config.stack!=="next-express"){
+  if(config.stack !== "mean" && config.stack !== "mean+tailwind+auth" && config.stack!=="hono" && config.stack!=="next-express" && config.stack!=="mern-turbo" && config.stack!=="pern"){
     copyTemplates(projectPath, config);
     installDependencies(projectPath, config, projectName);
     writeDockerArtifacts(projectPath, config);
@@ -101,6 +101,12 @@ export async function setupProject(projectName, config) {
     try {
       installDependencies(projectPath, config, projectName, false);
     } catch {}
+  }
+
+  if(config.stack === 'pern'){
+    pernSetup(projectPath, config, projectName);
+    installDependencies(projectPath, config, projectName, true, ['pg']);
+    writeDockerArtifacts(projectPath, config);
   }
 
   // --- Success + Next Steps ---

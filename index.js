@@ -37,6 +37,7 @@ async function askStackQuestions() {
         { name: chalk.bold.blue("Express TS Pro") + " → Production-ready TypeScript Express backend", value: "express-ts-pro" }
         ,{ name: chalk.bold.cyan("Next.js + Express") + " → Separate backend with Express.js", value: "next-express" }
         ,{ name: chalk.bold.green("MERN Turborepo") + " → Monorepo with Turbo (apps/client, apps/server)", value: "mern-turbo" }
+        ,{ name: chalk.bold.blue("PERN") + " → PostgreSQL + Express + React + Node", value: "pern" }
 
       ],
       pageSize: 10,
