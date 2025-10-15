@@ -1,0 +1,56 @@
+import { Router } from 'express';
+import nodemailer from 'nodemailer';
+// Stubs for future channels (Twilio, Telegram, Slack, Discord, Meta)
+// Implement actual clients and secrets via env vars when available.
+
+export const router = Router();
+
+const transporter = nodemailer.createTransport({
+  host: process.env.NOTIFY_SMTP_HOST,
+  port: Number(process.env.NOTIFY_SMTP_PORT || 587),
+  secure: false,
+  auth: process.env.NOTIFY_SMTP_USER
+    ? { user: process.env.NOTIFY_SMTP_USER, pass: process.env.NOTIFY_SMTP_PASS }
+    : undefined,
+});
+
+router.post('/email', async (req, res, next) => {
+  try {
+    const { to, subject, text, html } = req.body || {};
+    if (!to || !subject || (!text && !html)) {
+      return res.status(400).json({ error: 'to, subject, and text|html are required' });
+    }
+    const from = process.env.NOTIFY_FROM || 'no-reply@example.com';
+    const info = await transporter.sendMail({ from, to, subject, text, html });
+    res.json({ messageId: info.messageId });
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.post('/sms', async (_req, res) => {
+  // TODO: Integrate Twilio
+  res.json({ status: 'queued', channel: 'sms' });
+});
+
+router.post('/whatsapp', async (_req, res) => {
+  // TODO: Integrate Twilio WhatsApp
+  res.json({ status: 'queued', channel: 'whatsapp' });
+});
+
+router.post('/telegram', async (_req, res) => {
+  // TODO: Integrate Telegram bot
+  res.json({ status: 'queued', channel: 'telegram' });
+});
+
+router.post('/slack', async (_req, res) => {
+  // TODO: Integrate Slack webhook
+  res.json({ status: 'queued', channel: 'slack' });
+});
+
+router.post('/discord', async (_req, res) => {
+  // TODO: Integrate Discord webhook
+  res.json({ status: 'queued', channel: 'discord' });
+});
+
+

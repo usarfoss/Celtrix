@@ -29,6 +29,56 @@ export function installDependencies(projectPath, config, projectName,server=true
   }
 }
 
+export function writeDockerArtifacts(projectPath, config){
+  try{
+    const hasServer = fs.existsSync(path.join(projectPath,'server'));
+    const hasClient = fs.existsSync(path.join(projectPath,'client'));
+    const hasT3 = fs.existsSync(path.join(projectPath,'t3-app'));
+
+    // Server Dockerfile
+    if(hasServer){
+      const serverDockerfile = path.join(projectPath,'server','Dockerfile');
+      if(!fs.existsSync(serverDockerfile)){
+        const serverContent = `FROM node:20-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install --omit=dev=false\nCOPY . .\n# Build if TypeScript project\nRUN [ -f tsconfig.json ] && npm run build || echo "no build step"\nENV NODE_ENV=production\nEXPOSE 4000\nCMD [ "sh", "-c", "[ -d dist ] && npm start || npm run dev" ]\n`;
+        fs.writeFileSync(serverDockerfile, serverContent);
+      }
+    }
+
+    // Client Dockerfile
+    if(hasClient){
+      const clientDockerfile = path.join(projectPath,'client','Dockerfile');
+      if(!fs.existsSync(clientDockerfile)){
+        const clientContent = `FROM node:20-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install\nCOPY . .\nEXPOSE 5173\nCMD [ "npm", "run", "dev", "--", "--host" ]\n`;
+        fs.writeFileSync(clientDockerfile, clientContent);
+      }
+    }
+
+    // Next.js Dockerfile (t3-app)
+    if(hasT3){
+      const nextDockerfile = path.join(projectPath,'t3-app','Dockerfile');
+      if(!fs.existsSync(nextDockerfile)){
+        const nextContent = `FROM node:20-alpine AS deps\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install --omit=dev=false\n\nFROM node:20-alpine AS builder\nWORKDIR /app\nCOPY --from=deps /app/node_modules ./node_modules\nCOPY . .\nRUN npm run build\n\nFROM node:20-alpine AS runner\nWORKDIR /app\nENV NODE_ENV=production\nCOPY --from=builder /app/.next ./.next\nCOPY --from=builder /app/node_modules ./node_modules\nCOPY --from=builder /app/package*.json ./\nEXPOSE 3000\nCMD [ "npm", "start" ]\n`;
+        fs.writeFileSync(nextDockerfile, nextContent);
+      }
+    }
+
+    // docker-compose.yml at root
+    const composePath = path.join(projectPath,'docker-compose.yml');
+    if(!fs.existsSync(composePath)){
+      const clientService = hasT3 ? `\n  client:\n    build:\n      context: ./t3-app\n    ports:\n      - "3000:3000"\n    environment:\n      - NODE_ENV=development\n    volumes:\n      - ./t3-app:/app\n      - /app/node_modules\n` : (hasClient ? `\n  client:\n    build:\n      context: ./client\n    ports:\n      - "5173:5173"\n    environment:\n      - NODE_ENV=development\n    volumes:\n      - ./client:/app\n      - /app/node_modules\n` : '');
+
+      const serverService = hasServer ? `\n  server:\n    build:\n      context: ./server\n    ports:\n      - "4000:4000"\n    environment:\n      - NODE_ENV=development\n      - PORT=4000\n    volumes:\n      - ./server:/app\n      - /app/node_modules\n` : '';
+
+      const compose = `version: "3.9"\nservices:${clientService}${serverService}`;
+      fs.writeFileSync(composePath, compose);
+    }
+
+    logger.info("🐳 Docker artifacts generated");
+  }catch(error){
+    logger.error("❌ Failed to write Docker artifacts");
+    throw error;
+  }
+}
 
 export function angularSetup(projectPath, config, projectName) {
   logger.info("⚡ Setting up Angular...");
@@ -410,6 +460,27 @@ export function mevnSetup(projectPath,config,projectName){
 
   } catch (error) {
     logger.error("❌ Failed to set up MEVN");
+    throw error;
+  }
+}
+
+export function nextExpressSetup(projectPath, config, projectName){
+  try{
+    logger.info("⚡ Setting up Next.js + Express...");
+    const isTs = config.language === 'typescript';
+    const tmpl = isTs ? 'next-app --ts' : 'next-app';
+    execSync(`npx create-next-app@latest client --${isTs ? 'ts' : ''} --eslint --app --tailwind --src-dir --import-alias @/* --no-git --yes`, { cwd: projectPath, stdio: "inherit", shell: true });
+
+    // prepare express server using existing template
+    execSync(`mkdir server`, { cwd: projectPath, shell: true });
+    // copy from our templates/express-ts-pro/server into project server
+    const from = path.join(process.cwd(), 'templates','express-ts-pro','server');
+    const to = path.join(projectPath, 'server');
+    fs.cpSync(from, to, { recursive: true });
+
+    logger.info("✅ Next.js + Express setup complete");
+  }catch(error){
+    logger.error("❌ Failed to set up Next.js + Express");
     throw error;
   }
 }
