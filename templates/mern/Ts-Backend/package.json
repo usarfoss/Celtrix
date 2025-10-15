@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "start": "node dist/server.js",
+    "dev": "nodemon",
     "build": "tsc",
+    "test": "jest",
     "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write .",
-    "dev": "ts-node-dev --respawn --transpile-only server.ts",
     "prepare": "husky"
   },
   "jest": {
@@ -28,6 +30,8 @@
     "jiti": "^2.6.1",
     "prettier": "3.6.2",
     "ts-jest": "^29.4.4",
+    "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.45.0"
   },
@@ -43,7 +47,6 @@
     "mongoose": "^8.19.0",
     "morgan": "^1.10.1",
     "socket.io": "^4.8.1",
-    "ts-node-dev": "^2.0.0",
     "zod": "^4.1.11"
   }
 }
