@@ -87,51 +87,24 @@ export async function setupProject(projectName, config) {
   }
 
   // --- Success + Next Steps ---
-  console.log(`\n${chalk.greenBright(`✅ Project ${chalk.bold.yellow(projectName)} created successfully! 🎉`)}\n`);
-
-  let nextStepsText = "";
-
+  console.log(chalk.gray("-------------------------------------------"))
+  console.log(`${chalk.greenBright(`✅ Project ${chalk.bold.yellow(`${projectName}`)} created successfully! 🎉`)}`);
+  console.log(chalk.gray("-------------------------------------------"))
+  console.log(chalk.cyan("👉 Next Steps:\n"));
+  
   if(config.stack === "mean" || config.stack === "mean+tailwind+auth") {
-    nextStepsText = `
-${chalk.bold.cyan("1. Navigate to client:")}
-   ${chalk.yellow("cd")} ${chalk.white(projectName)}/client && ${chalk.green("npm start")}
-
-${chalk.bold.cyan("2. Navigate to server:")}
-   ${chalk.yellow("cd")} ${chalk.white(projectName)}/server && ${chalk.green("npm start")}
-    `;
+    console.log(`   ${chalk.yellow("cd")} ${projectName}/client && ${chalk.green("npm start")}`);
+    console.log(`   ${chalk.yellow("cd")} ${projectName}/server && ${chalk.green("npm start")}`);
   } else if(config.stack === "t3-stack") {
-    nextStepsText = `
-${chalk.bold.cyan("Navigate to your app:")}
-   ${chalk.yellow("cd")} ${chalk.white(projectName)}/t3-app && ${chalk.green("npm run dev")}
-    `;
+    console.log(`   ${chalk.yellow("cd")} ${projectName}/t3-app && ${chalk.green("npm run dev")}`);
   }else if(config.stack==="hono"){
-    nextStepsText = `
-${chalk.bold.cyan("1. Start the client:")}
-   ${chalk.yellow("cd")} ${chalk.white(projectName)}/client && ${chalk.green("npm run dev")}
-
-${chalk.bold.cyan("2. Start the server:")}
-   ${chalk.yellow("cd")} ${chalk.white(projectName)}/server && ${chalk.green("npm run dev")}
-    `;
+    console.log(`   ${chalk.yellow("cd")} ${projectName}/client && ${chalk.green("npm run dev")}`);
+    console.log(`   ${chalk.yellow("cd")} ${projectName}/server && ${chalk.green("npm run dev")}`);
   } else {
-    nextStepsText = `
-${chalk.bold.cyan("1. Start the client:")}
-   ${chalk.yellow("cd")} ${chalk.white(projectName)}/client && ${chalk.green("npm run dev")}
-
-${chalk.bold.cyan("2. Start the server:")}
-   ${chalk.yellow("cd")} ${chalk.white(projectName)}/server && ${chalk.green("npm start")}
-    `;
+    console.log(`   ${chalk.yellow("cd")} ${projectName}/client && ${chalk.green("npm run dev")}`);
+    console.log(`   ${chalk.yellow("cd")} ${projectName}/server && ${chalk.green("npm start")}`);
   }
-
-  console.log(
-    boxen(nextStepsText, {
-      padding: 1,
-      margin: 1,
-      borderColor: "green",
-      borderStyle: "round",
-      title: chalk.greenBright("🚀 Next Steps"),
-      titleAlignment: "center",
-    })
-  );
-
-  console.log(chalk.gray("✨ Made with ❤️  by Celtrix ✨\n"));
+  
+  console.log(chalk.gray("-------------------------------------------"))
+  console.log(chalk.gray("\n✨ Made with ❤️  by Celtrix ✨\n"));
 }
