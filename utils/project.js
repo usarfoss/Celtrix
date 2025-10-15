@@ -36,7 +36,7 @@ export async function setupProject(projectName, config) {
   );
 
   // --- Copy & Install ---
-  if(config.stack !== "mean" && config.stack !== "mean+tailwind+auth" && config.stack!=="hono"){
+  if(config.stack !== "mean" && config.stack !== "mean+tailwind+auth" && config.stack!=="hono" && config.stack!=="mern-turbo"){
     copyTemplates(projectPath, config);
     installDependencies(projectPath, config, projectName);
   }
@@ -84,6 +84,11 @@ export async function setupProject(projectName, config) {
     mernSetup(projectPath,config,projectName);
     copyTemplates(projectPath, config);
     installDependencies(projectPath, config, projectName,false,[])
+  }
+
+  if (config.stack === "mern-turbo") {
+    await (await import("./installer.js")).mernTurboSetup(projectPath, config, projectName);
+    await (await import("./installer.js")).installRootDependencies(projectPath);
   }
 
   // --- Success + Next Steps ---

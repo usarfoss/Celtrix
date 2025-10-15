@@ -27,6 +27,7 @@ async function askStackQuestions() {
       message: "Choose your stack:",
       choices: [
         { name: chalk.bold.blue("MERN") + " → MongoDB + Express + React + Node.js", value: "mern" },
+        { name: chalk.bold.blue("MERN") + " (Turborepo) → Monorepo with Turbo", value: "mern-turbo" },
         { name: chalk.bold.green("MERN") + " + Tailwind + Auth", value: "mern+tailwind+auth" },
         { name: chalk.bold.red("MEAN") + " → MongoDB + Express + Angular + Node.js", value: "mean" },
         { name: chalk.bold.magenta("MEAN") + " + Tailwind + Auth", value: "mean+tailwind+auth" },
