@@ -413,3 +413,136 @@ export function mevnSetup(projectPath,config,projectName){
     throw error;
   }
 }
+
+export function mernTurboSetup(projectPath, config, projectName) {
+  logger.info("⚡ Setting up MERN Turborepo (monorepo)...");
+
+  try {
+    // 1) Create monorepo directories
+    execSync(`mkdir apps`, { cwd: projectPath, shell: true });
+
+    // 2) Scaffold web app with Vite React
+    const webDir = path.join(projectPath, "apps", "web");
+    if (config.language === "typescript") {
+      execSync(`npm create vite@latest web -- --t react-ts --no-rolldown --no-interactive`, {
+        cwd: path.join(projectPath, "apps"),
+        stdio: "inherit",
+        shell: true,
+      });
+    } else {
+      execSync(`npm create vite@latest web -- --t react --no-rolldown --no-interactive`, {
+        cwd: path.join(projectPath, "apps"),
+        stdio: "inherit",
+        shell: true,
+      });
+    }
+
+    // 3) Scaffold server app
+    const serverDir = path.join(projectPath, "apps", "server");
+    execSync(`mkdir server && npm init -y`, { cwd: path.join(projectPath, "apps"), shell: true });
+
+    // Write basic server index
+    const serverIndexJs = `import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(morgan('dev'));
+
+app.get('/api/health', (_req, res) => {
+  res.json({ ok: true, service: 'server', timestamp: Date.now() });
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+`;
+
+    fs.writeFileSync(path.join(serverDir, "index.js"), serverIndexJs, "utf-8");
+
+    // Update server package.json with scripts and type module
+    const serverPkgPath = path.join(serverDir, "package.json");
+    const serverPkgRaw = fs.readFileSync(serverPkgPath, "utf-8");
+    const serverPkg = JSON.parse(serverPkgRaw);
+    serverPkg.name = "server";
+    serverPkg.type = "module";
+    serverPkg.scripts = {
+      dev: "nodemon index.js",
+      start: "node index.js"
+    };
+    fs.writeFileSync(serverPkgPath, JSON.stringify(serverPkg, null, 2));
+
+    // 4) Root files: package.json and turbo.json
+    const rootPkg = {
+      name: projectName,
+      private: true,
+      workspaces: ["apps/*"],
+      scripts: {
+        dev: "turbo run dev",
+        build: "turbo run build",
+        lint: "turbo run lint",
+        start: "turbo run start"
+      },
+      devDependencies: {
+        turbo: "^2.1.0"
+      }
+    };
+    fs.writeFileSync(path.join(projectPath, "package.json"), JSON.stringify(rootPkg, null, 2));
+
+    const turboConfig = {
+      $schema: "https://turbo.build/schema.json",
+      pipeline: {
+        build: {
+          dependsOn: ["^build"],
+          outputs: ["dist/**", "build/**"]
+        },
+        dev: {
+          cache: false
+        },
+        lint: {
+          cache: true
+        },
+        start: {
+          cache: false
+        }
+      }
+    };
+    fs.writeFileSync(path.join(projectPath, "turbo.json"), JSON.stringify(turboConfig, null, 2));
+
+    // 5) Install app-level deps (done later at root), but ensure server deps listed
+    // Deps for server installed at root install via workspaces; ensure declared locally first
+    execSync(`npm install express cors morgan`, { cwd: serverDir, stdio: "inherit", shell: true });
+    execSync(`npm install -D nodemon`, { cwd: serverDir, stdio: "inherit", shell: true });
+
+    // Ensure web has dev script compatible with turbo
+    const webPkgPath = path.join(webDir, "package.json");
+    const webPkg = JSON.parse(fs.readFileSync(webPkgPath, "utf-8"));
+    webPkg.name = "web";
+    webPkg.scripts = {
+      ...webPkg.scripts,
+      dev: webPkg.scripts?.dev || "vite",
+      build: webPkg.scripts?.build || "vite build",
+      preview: webPkg.scripts?.preview || "vite preview"
+    };
+    fs.writeFileSync(webPkgPath, JSON.stringify(webPkg, null, 2));
+
+    logger.info("✅ MERN Turborepo scaffolded successfully!");
+  } catch (error) {
+    logger.error("❌ Failed to set up MERN Turborepo");
+    throw error;
+  }
+}
+
+export function installRootDependencies(projectPath) {
+  try {
+    logger.info("📦 Installing root and workspace dependencies (Turbo + workspaces)...");
+    execSync("npm install", { cwd: projectPath, stdio: "inherit", shell: true });
+    logger.info("✅ Installed root and workspace dependencies");
+  } catch (error) {
+    logger.error("❌ Failed to install root dependencies");
+    throw error;
+  }
+}
