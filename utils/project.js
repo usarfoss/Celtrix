@@ -4,7 +4,7 @@ import chalk from "chalk";
 import boxen from "boxen";
 import { logger } from "./logger.js";
 import { copyTemplates } from "./templateManager.js";
-import { HonoReactSetup,mernTailwindSetup, installDependencies, mernSetup, serverAuthSetup, serverSetup, mevnSetup, nextExpressSetup, writeDockerArtifacts } from "./installer.js";
+import { HonoReactSetup,mernTailwindSetup, installDependencies, mernSetup, serverAuthSetup, serverSetup, mevnSetup, nextExpressSetup, writeDockerArtifacts, turboMernSetup } from "./installer.js";
 import { angularSetup, angularTailwindSetup } from "./installer.js";
 
 export async function setupProject(projectName, config) {
@@ -92,6 +92,15 @@ export async function setupProject(projectName, config) {
     // install deps: client and server
     installDependencies(projectPath, config, projectName, true);
     writeDockerArtifacts(projectPath, config);
+  }
+
+  if(config.stack === 'mern-turbo'){
+    turboMernSetup(projectPath, config, projectName);
+    logger.info("📦 Installing workspace dependencies...");
+    // Root install to hoist turbo, then app-level installs handled by turbo or per-app
+    try {
+      installDependencies(projectPath, config, projectName, false);
+    } catch {}
   }
 
   // --- Success + Next Steps ---

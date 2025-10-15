@@ -80,6 +80,78 @@ export function writeDockerArtifacts(projectPath, config){
   }
 }
 
+export function turboMernSetup(projectPath, config, projectName){
+  try{
+    logger.info("⚡ Setting up MERN Turborepo...");
+    // root package.json with workspaces
+    const rootPkg = {
+      name: projectName,
+      private: true,
+      version: "0.1.0",
+      packageManager: "npm@10",
+      workspaces: ["apps/*", "packages/*"],
+      scripts: {
+        dev: "turbo run dev",
+        build: "turbo run build",
+        lint: "turbo run lint"
+      },
+      devDependencies: {
+        turbo: "^2.1.2"
+      }
+    };
+    fs.writeFileSync(path.join(projectPath,'package.json'), JSON.stringify(rootPkg, null, 2));
+    fs.mkdirSync(path.join(projectPath,'apps'), { recursive: true });
+
+    // scaffold client via Vite React
+    if(config.language==='typescript'){
+      execSync(`npm create vite@latest client -- --t react-ts --no-rolldown --no-interactive`, { cwd: path.join(projectPath,'apps'), stdio: 'inherit', shell: true });
+    }else{
+      execSync(`npm create vite@latest client -- --t react --no-rolldown --no-interactive`, { cwd: path.join(projectPath,'apps'), stdio: 'inherit', shell: true });
+    }
+    // move to apps/client already created by vite
+
+    // scaffold server from express-ts-pro template
+    const serverDir = path.join(projectPath,'apps','server');
+    fs.mkdirSync(serverDir, { recursive: true });
+    const fromServer = path.join(process.cwd(), 'templates','express-ts-pro','server');
+    fs.cpSync(fromServer, serverDir, { recursive: true });
+
+    // turbo.json
+    const turbo = {
+      $schema: "https://turbo.build/schema.json",
+      pipeline: {
+        build: {
+          dependsOn: ["^build"],
+          outputs: ["dist/**", ".next/**"]
+        },
+        dev: {
+          cache: false
+        },
+        lint: {}
+      }
+    };
+    fs.writeFileSync(path.join(projectPath,'turbo.json'), JSON.stringify(turbo, null, 2));
+
+    // client package add turbo scripts
+    const clientPkgPath = path.join(projectPath, 'apps','client','package.json');
+    if(fs.existsSync(clientPkgPath)){
+      const pkg = JSON.parse(fs.readFileSync(clientPkgPath,'utf-8'));
+      pkg.scripts = pkg.scripts || {};
+      pkg.scripts.dev = pkg.scripts.dev || 'vite';
+      pkg.scripts.build = pkg.scripts.build || 'vite build';
+      pkg.scripts.lint = pkg.scripts.lint || 'echo "no lint"';
+      fs.writeFileSync(clientPkgPath, JSON.stringify(pkg, null, 2));
+    }
+
+    // server package already present
+
+    logger.info("✅ MERN Turborepo created (apps/client, apps/server)");
+  }catch(error){
+    logger.error("❌ Failed to set up MERN Turborepo");
+    throw error;
+  }
+}
+
 export function angularSetup(projectPath, config, projectName) {
   logger.info("⚡ Setting up Angular...");
 
