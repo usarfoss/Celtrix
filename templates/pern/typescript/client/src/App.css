@@ -1,0 +1,19 @@
+.powered-badge {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  font-size: 0.875rem;
+  background-color: black;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1),
+  0 4px 6px -2px rgba(0,0,0,0.05);
+  opacity: 0.8;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.powered-badge:hover { opacity: 1; }
+.powered-badge .celtrix { font-weight: 600; color: #4ade80; }
+
+

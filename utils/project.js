@@ -35,6 +35,11 @@ export async function setupProject(projectName, config) {
     })
   );
 
+  // Ensure compatible language for stacks with limited support
+  if (config.stack === 'pern') {
+    config.language = 'typescript';
+  }
+
   // --- Copy & Install ---
   if(config.stack !== "mean" && config.stack !== "mean+tailwind+auth" && config.stack!=="hono"){
     copyTemplates(projectPath, config);
