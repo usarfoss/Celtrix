@@ -413,3 +413,24 @@ export function mevnSetup(projectPath,config,projectName){
     throw error;
   }
 }
+
+export function nextExpressSetup(projectPath, config, projectName){
+  try{
+    logger.info("⚡ Setting up Next.js + Express...");
+    const isTs = config.language === 'typescript';
+    const tmpl = isTs ? 'next-app --ts' : 'next-app';
+    execSync(`npx create-next-app@latest client --${isTs ? 'ts' : ''} --eslint --app --tailwind --src-dir --import-alias @/* --no-git --yes`, { cwd: projectPath, stdio: "inherit", shell: true });
+
+    // prepare express server using existing template
+    execSync(`mkdir server`, { cwd: projectPath, shell: true });
+    // copy from our templates/express-ts-pro/server into project server
+    const from = path.join(process.cwd(), 'templates','express-ts-pro','server');
+    const to = path.join(projectPath, 'server');
+    fs.cpSync(from, to, { recursive: true });
+
+    logger.info("✅ Next.js + Express setup complete");
+  }catch(error){
+    logger.error("❌ Failed to set up Next.js + Express");
+    throw error;
+  }
+}
