@@ -50,9 +50,21 @@ That's it! Follow the interactive prompts to customize your project.
 
 ---
 
-## FAQ
+## ❓ Frequently Asked Questions
 
-You can now find the full list of FAQs here: [FAQ.md](./FAQ.md)
+**Q: How do I get started with Celtrix?**  
+A: Simply run `npx celtrix my-awesome-app` and follow the interactive prompts to set up your project in seconds!
+
+**Q: What stacks does Celtrix support?**  
+A: Celtrix supports various popular stacks including MERN, MEAN, T3, Angular+Tailwind, and more. Check our [templates directory](templates/) for the full list.
+
+**Q: Is Celtrix free to use?**  
+A: Yes! Celtrix is open-source under the ISC license, completely free for both personal and commercial use.
+
+**Q: How can I contribute to Celtrix?**  
+A: We welcome contributions! You can report issues, suggest features, or submit pull requests. See our [contributing guide](CONTRIBUTING.md) for details.
+
+For more questions, check out our [full FAQ](./FAQ.md).
 
 ---
 
