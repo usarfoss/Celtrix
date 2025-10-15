@@ -1,11 +1,17 @@
 import 'dotenv/config';
 import { createApp } from './app';
 import { logger } from './setup/logger';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import { MonitoringHub } from './telemetry/monitoringHub';
 
 const app = createApp();
+const httpServer = createServer(app);
+const io = new Server(httpServer, { cors: { origin: '*' } });
+MonitoringHub.attach(io);
 
 const port = Number(process.env.PORT) || 4000;
-const server = app.listen(port, () => {
+const server = httpServer.listen(port, () => {
   logger.info('server_started', { port, env: process.env.NODE_ENV || 'development' });
 });
 
