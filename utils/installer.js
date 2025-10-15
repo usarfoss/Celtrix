@@ -1,5 +1,6 @@
 import { execSync } from "child_process";
 import { logger } from "./logger.js";
+import chalk from "chalk";
 import path from "path";
 import fs from "fs";
 
@@ -320,9 +321,9 @@ export function mernTailwindSetup(projectPath, config, projectName) {
 
     fs.writeFileSync(viteConfigPath, viteConfigContent);
 
-    console.log("✅ TailwindCSS added to Vite config");
+    logger.success("✅ TailwindCSS added to Vite config");
   } catch (err) {
-    console.error("❌ Failed to setup Tailwind:", err.message);
+    logger.error(`❌ Failed to setup Tailwind: ${err.message}`);
   }
 }
 
