@@ -34,6 +34,14 @@ export function copyTemplates(projectPath, config) {
     fs.copySync(backendTemplate, serverPath);
   }
 
+  else if(stack === "express-ts-pro"){
+    const backendTemplate = path.join(__dirname, "..", "templates", "express-ts-pro", "server");
+    const serverPath = path.join(projectPath, "server");
+
+    logger.info("📂 Copying backend template files...");
+    fs.copySync(backendTemplate, serverPath);
+  }
+
   else if(stack !== "mean" && stack !== "mean+tailwind+auth" && stack !== "t3-stack"){
     const frontendTemplate = path.join(__dirname, "..", "templates", stack, config.language, "client");
     const backendTemplate = path.join(__dirname, "..", "templates", stack, config.language, "server");
@@ -62,4 +70,6 @@ export function copyTemplates(projectPath, config) {
     logger.info("📂 Copying template files...");
     fs.copySync(frontendTemplate, clientPath);
   }
+
+  // next-express: handled by installer copying express server directly; no template copy here
 }
