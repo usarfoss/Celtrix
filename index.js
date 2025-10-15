@@ -35,6 +35,7 @@ async function askStackQuestions() {
         { name: chalk.bold.yellow("Next.js") + " + tRPC + Prisma + Tailwind + Auth", value: "t3-stack" },
         { name: chalk.bold.red("Hono") + " → Hono + Prisma + React", value: "hono" },
         { name: chalk.bold.blue("Express TS Pro") + " → Production-ready TypeScript Express backend", value: "express-ts-pro" }
+        ,{ name: chalk.bold.cyan("Next.js + Express") + " → Separate backend with Express.js", value: "next-express" }
 
       ],
       pageSize: 10,

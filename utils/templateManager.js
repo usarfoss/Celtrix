@@ -70,4 +70,6 @@ export function copyTemplates(projectPath, config) {
     logger.info("📂 Copying template files...");
     fs.copySync(frontendTemplate, clientPath);
   }
+
+  // next-express: handled by installer copying express server directly; no template copy here
 }
