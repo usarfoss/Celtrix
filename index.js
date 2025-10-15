@@ -33,7 +33,8 @@ async function askStackQuestions() {
         { name: chalk.bold.cyan("MEVN") + " → MongoDB + Express + Vue.js + Node.js", value: "mevn" },
         { name: chalk.bold.yellow("MEVN") + " + Tailwind + Auth", value: "mevn+tailwind+auth" },
         { name: chalk.bold.yellow("Next.js") + " + tRPC + Prisma + Tailwind + Auth", value: "t3-stack" },
-        { name: chalk.bold.red("Hono") + " → Hono + Prisma + React", value: "hono" }
+        { name: chalk.bold.red("Hono") + " → Hono + Prisma + React", value: "hono" },
+        { name: chalk.bold.blue("Express TS Pro") + " → Production-ready TypeScript Express backend", value: "express-ts-pro" }
 
       ],
       pageSize: 10,
