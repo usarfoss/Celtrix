@@ -4,7 +4,7 @@ import chalk from "chalk";
 import boxen from "boxen";
 import { logger } from "./logger.js";
 import { copyTemplates } from "./templateManager.js";
-import { HonoReactSetup,mernTailwindSetup, installDependencies, mernSetup, serverAuthSetup, serverSetup, mevnSetup, nextExpressSetup } from "./installer.js";
+import { HonoReactSetup,mernTailwindSetup, installDependencies, mernSetup, serverAuthSetup, serverSetup, mevnSetup, nextExpressSetup, writeDockerArtifacts } from "./installer.js";
 import { angularSetup, angularTailwindSetup } from "./installer.js";
 
 export async function setupProject(projectName, config) {
@@ -39,6 +39,7 @@ export async function setupProject(projectName, config) {
   if(config.stack !== "mean" && config.stack !== "mean+tailwind+auth" && config.stack!=="hono" && config.stack!=="next-express"){
     copyTemplates(projectPath, config);
     installDependencies(projectPath, config, projectName);
+    writeDockerArtifacts(projectPath, config);
   }
 
   if(config.stack==="mern+tailwind+auth"){
@@ -90,6 +91,7 @@ export async function setupProject(projectName, config) {
     nextExpressSetup(projectPath,config,projectName);
     // install deps: client and server
     installDependencies(projectPath, config, projectName, true);
+    writeDockerArtifacts(projectPath, config);
   }
 
   // --- Success + Next Steps ---
